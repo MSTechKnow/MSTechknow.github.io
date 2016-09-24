@@ -1,1 +1,84 @@
-Hello World
+<html>
+	<head>
+		<title>Techknow muCode Architecture Setup</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">	
+		<link href="styles.css" rel="stylesheet" />
+	</head>
+	<body style="background-color:white;background-image: url('jupyter-sq-02.png');background-size: 80px 60px;">
+		<div id="impress">		
+			
+			<div class="step" data-x="-100" data-z="1200" style="background-image: url('back.jpg')">
+				<h1>JupyterHub for hackathon using Docker Spawner</h1><h3>The journey</h3>
+			</div>
+			
+			<div class="step" data-y="-700"  style="background-image: url('docker-banner2.jpg')" >
+				<h2>Let's start with Dockers</h2>
+				<ul style="font-size:25px;text-align:left">
+				<li>Dockers are containerized setups which act as 
+					<ul style="font-size:20px;text-align:left" type="1">
+						<li>Reusable modules</li>
+						<li>VMs to use virtualized system resources</li>
+						<li>Optimize setup to use minimum resources</li>
+						</ul>
+				</li>
+				<li>Using dockers for each user would be a better option, since dockers can be spawned programatically.<br />
+					And so, one can spawn a notebook on a user login.
+				</li>
+				<li> In order to scale, we decided to use Docker Swarm. Which is similar to a cluster, 
+					but takes away a lot of programmatic overhead
+				</li>
+				</ul>
+			</div>
+			
+			<div class="step" data-y="900" data-x="1200" data-rotate="120"  style="background-image: url('maxresdefault.jpg')">
+				<h2 style="text-align:left">Docker Swarm</h2>
+				<ul style="font-size:25px;text-align:left">
+					<li>We setup a 3 system swarm with 
+					<ul type="1" style="font-size:20px;text-align:left">
+						<li>1 system having: manage, consul and data node [8 GB RAM]</li>
+						<li> And the other 2 as data nodes[4GB RAM each]</li>
+					</ul>
+					</li>
+					<li>Consul manages the attributes of the swarm like the key-value stores,etc
+					</li>
+					<li>While the manage works as the gateway to the swarm to communicate and spawn dockers
+					</li>
+					<li>Now all we need is
+					<ul style="font-size:15px;text-align:left" type="1">
+					<li>JupyterHub to talk to Swarm (JupyterHub's DockerSpawner)</li>
+					<li>Generate System Users on manage - So that JupyterHub users are configured through LDAP/Git</li>
+					<li>Test the architecture</li>
+					</ul>
+			</div>
+			<div class="step" data-y="1800" data-x="1800" data-z="300" data-rotate ="240"  style="background-image: url('download.jpg')">
+			<h2 style="text-align:left">JupyterHub DockerSpawner</h2>
+			<ul style="font-size:25px;text-align:left">
+			<li>DockerSpawner is a project under Jupyter to enable user based docker spawn through Github/Gitlab/Google/SystemUsers
+			</li>
+			<li>We configured this for System Users with GitLab since GitHub will require everyone to have a GitHub account
+			while local instance of GitLab can have an LDAP authentication 
+			</li>
+			<li> However, GitLab authentication always redirected to gitlab.com instead of local instance 
+			[We raised an issue on the GitHub project and waited for a day and still waiting-deadlock]
+			</li>
+			<li> Finally, we decided to go ahead with manually configuring 200 system users and test
+			</li>			
+			</div>
+			<div class="step" data-x="-1800" data-z="-800" data-rotate="360"  style="background-image: url('load.jpg')">
+			<h2 style="text-align:left">Testing the architecture</h2>
+			<ul style="font-size:25px;text-align:left;color:black">
+			<li> We generated about 100 system users and assigned 32 of them to AoPS Team in incubation bay. Scheduling a one hour
+			testing session post an introductory session a day before
+			</li>
+			<li>13 of them logged in and started working simultaneously performing basic operations for about 20 minutes - everything
+			was functioning perfect
+			</li>
+			<li> When 2 users ran CPU intensive jobs [Tower of Hanoi and decimal integer count of high order], it consumed 100%
+			CPU Cycles of the manage which didn't transfer the containers even then and chocked.
+			</li>
+		</div>
+		
+		
+		<script type="text/javascript" src="impress.js"></script>
+	</body>
+</html>
